@@ -13,7 +13,7 @@
 
 #Swagger Details
 </br></br>
-  Url: http://localhost:8080/student/swagger-ui.html
+  Url: http://localhost:8080/student/documentation/swagger-ui.html
   </br>
   For all end points ,provide following header values 
   </br>
