@@ -8,14 +8,17 @@ package com.ust.training.studentdata.common;
 import lombok.Data;
 
 /**
+ * Class for searching student
  * 
  * @author Akhila
  *
  *
  */
+
 @Data
-public class SearchByDTO {
-  private int rollNo;
+public class SearchCriteriaByDTO {
+
+  private Integer rollNo;
   private String department;
 
 }

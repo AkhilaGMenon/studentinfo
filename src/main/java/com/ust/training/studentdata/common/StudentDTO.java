@@ -11,15 +11,16 @@ import lombok.Data;
  * @author Akhila
  *
  */
+
 @Data
 public class StudentDTO {
+
   private String id;
-  private int rollNo;
+  private Integer rollNo;
   private String firstName;
   private String department;
   private String lastName;
   private String address;
-
 
 }
 

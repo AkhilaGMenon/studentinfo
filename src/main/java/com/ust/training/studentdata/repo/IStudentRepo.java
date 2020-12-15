@@ -10,13 +10,13 @@ import com.azure.spring.data.cosmos.repository.ReactiveCosmosRepository;
 import com.ust.training.studentdata.model.Student;
 
 /**
- * Interface for StudentRepo
+ * IStudentRepo is an interface which extends ReactiveCosmosRepository for using CRUD operation over student class.
  * 
  * @author Akhila
  *
  */
 
 @Repository
-public interface StudentRepo extends ReactiveCosmosRepository<Student, String> {
+public interface IStudentRepo extends ReactiveCosmosRepository<Student, String> {
 
 }

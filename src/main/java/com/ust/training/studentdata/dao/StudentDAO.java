@@ -11,12 +11,16 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.models.CosmosQueryRequestOptions;
 import com.azure.cosmos.models.SqlParameter;
 import com.azure.cosmos.models.SqlQuerySpec;
 import com.ust.training.studentdata.constant.SQLQueries;
+import com.ust.training.studentdata.constant.StudentDBConstants;
+import com.ust.training.studentdata.exception.StudentServiceException;
 import com.ust.training.studentdata.model.Student;
+import lombok.extern.slf4j.Slf4j;
 
 /***
  * DAO class for for performing dao operations
@@ -25,55 +29,64 @@ import com.ust.training.studentdata.model.Student;
  *
  */
 @Component
-public class StudentDAO {
+@Slf4j
 
-  @Value("${azure.cosmosdb.database}")
-  private String databaseName;
+public class StudentDAO {
 
   @Autowired
   private CosmosClientBuilder cosmosClientBuilder;
-  
-  private String collectionName = "studentDB";
+  @Value("${azure.cosmosdb.database}")
+  private String databaseName;
 
   /***
-   * This method accepts 2 parameters department and rollNo for the query query execution happening
-   * here.
+   * This method accepts 2 parameters department and rollNo for the query query execution
+   * 
+   * SqlQuerySpec Initializes a new instance of the SqlQuerySpec class.
+   * 
    * 
    * @param department
    * @param rollNo
    * @return List of Students
    */
   public List<Student> getStudentByDepartmentandRollNo(String department, Integer rollNo) {
-    
-    // SqlQuerySpec Initializes a new instance of the SqlQuerySpec class.
-    SqlQuerySpec querySpec = new SqlQuerySpec();
-    String query = null;
-    System.out.println("RollNo" + rollNo);
-    if (department.isEmpty() ||rollNo==0) {
-      query = SQLQueries.BASE_QUERY.concat(SQLQueries.ROLL_NUMBER_CRITERIA)
-          .concat(SQLQueries.DEPARTMENT_OR_CRITERIA);
-    } else {
-      query = SQLQueries.BASE_QUERY.concat(SQLQueries.DEPARTMENT_CRITERIA)
-          .concat(SQLQueries.ROLL_NUMBER_CRITERIA);
+
+    log.debug("Begining of getStudentByDepartmentandRollNo method");
+    List<Student> studentList = null;
+
+    try {
+      SqlQuerySpec querySpec = new SqlQuerySpec();
+      String query = SQLQueries.BASE_QUERY;
+      List<SqlParameter> paramList = new ArrayList<>();
+      SqlParameter departmentParam =
+          new SqlParameter(SQLQueries.DATABASE_PARAM_DEPARTMENT, department);
+      SqlParameter rollNoparam = new SqlParameter(SQLQueries.DATABASE_PARAM_ROLLNUMBER, rollNo);
+      if (!StringUtils.isEmpty(department)) {
+        query = query.concat(SQLQueries.DEPARTMENT_CRITERIA);
+        paramList.add(departmentParam);
+      }
+      if (null != rollNo) {
+        query = query.concat(SQLQueries.ROLL_NUMBER_CRITERIA);
+        paramList.add(rollNoparam);
+
+      }
+      querySpec.setQueryText(query);
+      querySpec.setParameters(paramList);
+      studentList = cosmosClientBuilder.buildClient().getDatabase(databaseName)
+          .getContainer(StudentDBConstants.COLLECTION_NAME)
+          .queryItems(querySpec, getQueryOptions(), Student.class).stream()
+          .collect(Collectors.toList());
+    } catch (Exception e) {
+      log.error("Exception in getStudentByDepartmentandRollNo: in StudentDAO class:", e);
+      throw new StudentServiceException("Exception in getStudentByDepartmentandRollNo", e);
     }
-
-    querySpec.setQueryText(query);
-    SqlParameter departmentParam = new SqlParameter("@department", department);
-    SqlParameter rollNoparam = new SqlParameter("@rollNo", rollNo);
-    List<SqlParameter> paramList = new ArrayList<>();
-    paramList.add(departmentParam);
-    paramList.add(rollNoparam);
-    querySpec.setParameters(paramList);
-    List<Student> studentList = cosmosClientBuilder.buildClient().getDatabase(databaseName)
-        .getContainer(collectionName).queryItems(querySpec, getQueryOptions(), Student.class)
-        .stream().collect(Collectors.toList());
-
+    log.debug("Ending of getStudentByDepartmentandRollNo method:");
     return studentList;
+
   }
 
 
   /***
-   * Its for Query options
+   * CosmosQueryRequestOptions is for Query options
    * 
    * @return the CosmosQueryOptions
    */

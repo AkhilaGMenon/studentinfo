@@ -1,7 +1,7 @@
 /***
  * Project Name:StudentData
  */
-package com.ust.training.studentdata.Exception;
+package com.ust.training.studentdata.exception;
 
 /**
  * 
@@ -12,20 +12,23 @@ package com.ust.training.studentdata.Exception;
  */
 public class StudentServiceException extends RuntimeException {
   private static final long serialVersionUID = 2853146757927156650L;
-/**
- * 
- *StudentServiceException  constructor takes one parameter message
- * @param message
- */
+
+  /**
+   * 
+   * StudentServiceException constructor takes one parameter message
+   * 
+   * @param message
+   */
   public StudentServiceException(String message) {
     super(message);
   }
-/**
- * StudentServiceException constructor  takes 2 parameters
- * 
- * @param message
- * @param throwable
- */
+
+  /**
+   * StudentServiceException constructor takes 2 parameters
+   * 
+   * @param message
+   * @param throwable
+   */
   public StudentServiceException(String message, Throwable throwable) {
     super(message, throwable);
   }

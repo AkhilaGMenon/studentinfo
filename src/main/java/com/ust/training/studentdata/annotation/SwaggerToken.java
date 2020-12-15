@@ -31,17 +31,13 @@ import io.swagger.annotations.ApiResponses;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @ApiImplicitParams({
-    @ApiImplicitParam(name = HttpHeaders.CONTENT_TYPE, value = "Content-Type", dataType = "String",
-        paramType = "header"),
-    @ApiImplicitParam(name = HttpHeaders.ACCEPT_LANGUAGE, value = "Accept-Language",
-        dataType = "String", paramType = "header"),})
-@ApiResponses(value = {
-    @ApiResponse(code = HttpServletResponse.SC_OK, message = "Resource fetched successfully"),
-    @ApiResponse(code = HttpServletResponse.SC_CREATED, message = "Resource created successfully"),
-    @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Resource Not found"),
-    @ApiResponse(code = HttpServletResponse.SC_CONFLICT, message = "Conflict"),
-    @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-        message = "Server error ...check Logs")})
+                 @ApiImplicitParam(name = HttpHeaders.CONTENT_TYPE, value = "Content-Type", dataType = "String",paramType = "header"),
+                 @ApiImplicitParam(name = HttpHeaders.ACCEPT_LANGUAGE, value = "Accept-Language",dataType = "String", paramType = "header"),})
+@ApiResponses(value = {@ApiResponse(code = HttpServletResponse.SC_OK, message = "Resource fetched successfully"),
+                 @ApiResponse(code = HttpServletResponse.SC_CREATED, message = "Resource created successfully"),
+                 @ApiResponse(code = HttpServletResponse.SC_NOT_FOUND, message = "Resource Not found"),
+                 @ApiResponse(code = HttpServletResponse.SC_CONFLICT, message = "Conflict"),
+                 @ApiResponse(code = HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message = "Server error ...check Logs")})
 public @interface SwaggerToken {
 
 }

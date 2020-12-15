@@ -14,17 +14,19 @@ import com.azure.cosmos.DirectConnectionConfig;
 import com.azure.cosmos.GatewayConnectionConfig;
 import com.azure.spring.data.cosmos.config.AbstractCosmosConfiguration;
 import com.azure.spring.data.cosmos.repository.config.EnableReactiveCosmosRepositories;
+import com.ust.training.studentdata.constant.StudentDBConstants;
+import com.ust.training.studentdata.constant.StudentPackageConstants;
+
 /**
+ * 
+ * StudentConfig class to configure properties of cosmosdb
  * 
  * @author Akhila
  * 
- * StudentConfig  class to configure properties of cosmos db
- *
  */
 @Configuration
-@EnableReactiveCosmosRepositories(basePackages = "com.ust.training.studentdata")
+@EnableReactiveCosmosRepositories(basePackages =StudentPackageConstants.STUDENT_BASE_PACKAGE)
 public class StudentConfig extends AbstractCosmosConfiguration {
-
   @Value("${azure.cosmosdb.uri}")
   private String cosmosDbUrl;
 
@@ -34,30 +36,39 @@ public class StudentConfig extends AbstractCosmosConfiguration {
   @Value("${azure.cosmosdb.database}")
   private String databaseName;
 
+  /***
+   * Method for returning the cosmosDBUrl and key
+   * 
+   * @return CosmosClientBuilder
+   */
   @Bean
   public CosmosClientBuilder getCosmosClientBuilder() {
-    return new CosmosClientBuilder().endpoint(cosmosDbUrl).key(cosmosDbKey)
+    return new CosmosClientBuilder().endpoint(cosmosDbUrl)
+        .key(cosmosDbKey)
         .directMode(new DirectConnectionConfig(), new GatewayConnectionConfig());
 
   }
 
+  /***
+   * Method for returning the cosmosDBUrl and key
+   * 
+   * @return CosmosClient
+   */
+  @Bean
+  public CosmosClient getCosmosClient() {
+    return new CosmosClientBuilder().endpoint(cosmosDbUrl)
+        .key(cosmosDbKey)
+        .directMode(new DirectConnectionConfig(), new GatewayConnectionConfig()).buildClient();
+
+  }
+
+  /**
+   * Method to getDatabaseName
+   * 
+   * @return databaseName
+   */
   @Override
   protected String getDatabaseName() {
     return databaseName;
-  }
-
-  @Bean
-  public CosmosContainer getCosmosContainer() {
-    return new CosmosClientBuilder().endpoint(cosmosDbUrl).key(cosmosDbKey)
-        .directMode(new DirectConnectionConfig(), new GatewayConnectionConfig()).buildClient()
-        .getDatabase(databaseName).getContainer("studentDB");
-
-  }
-
-  @Bean
-  public CosmosClient getCosmosClient() {
-    return new CosmosClientBuilder().endpoint(cosmosDbUrl).key(cosmosDbKey)
-        .directMode(new DirectConnectionConfig(), new GatewayConnectionConfig()).buildClient();
-
   }
 }

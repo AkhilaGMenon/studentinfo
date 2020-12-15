@@ -6,35 +6,32 @@
 package com.ust.training.studentdata.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ust.training.studentdata.StudentDataApplication;
-import com.ust.training.studentdata.Exception.StudentServiceException;
-import com.ust.training.studentdata.common.SearchByDTO;
+import com.ust.training.studentdata.common.SearchCriteriaByDTO;
 import com.ust.training.studentdata.common.StudentDTO;
 import com.ust.training.studentdata.dao.StudentDAO;
+import com.ust.training.studentdata.exception.StudentServiceException;
 import com.ust.training.studentdata.model.Student;
-import com.ust.training.studentdata.repo.StudentRepo;
-import reactor.core.publisher.Flux;
+import com.ust.training.studentdata.repo.IStudentRepo;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 /**
  * 
+ * StudentService has CRUD method service for Student resource
+ * 
  * @author Akhila
  *
  */
+@Slf4j
 @Service
 public class StudentService {
   @Autowired
-  private StudentRepo repository;
+  private IStudentRepo repository;
   @Autowired
   private StudentDAO dao;
-
-  private static final Logger log = LoggerFactory.getLogger(StudentDataApplication.class);
 
   /***
    * 
@@ -45,44 +42,51 @@ public class StudentService {
    */
   public Student saveStudentDetails(StudentDTO studentDTO) {
 
+    log.debug("Begining of saveStudentDetails method");
     Student details = new Student();
-    details.setId(studentDTO.getId());
-    details.setFirstName(studentDTO.getFirstName());
-    details.setLastName(studentDTO.getLastName());
-    details.setAddress(studentDTO.getAddress());
-    details.setRollNo(studentDTO.getRollNo());
-    details.setDepartment(studentDTO.getDepartment());
-    log.debug("Saving studentDetails: {}", details);
-    // Save the User class to Azure CosmosDB database.
-    Mono<Student> saveStudent = repository.save(details);
-    // Nothing happens until we subscribe to these Monos.
-    Student savedStudent = saveStudent.block();
-    log.debug("Saved StudentDetails");
-    return savedStudent;
+    try {
+      details.setId(studentDTO.getId());
+      details.setFirstName(studentDTO.getFirstName());
+      details.setLastName(studentDTO.getLastName());
+      details.setAddress(studentDTO.getAddress());
+      details.setRollNo(studentDTO.getRollNo());
+      details.setDepartment(studentDTO.getDepartment());
+      log.debug("Saving studentDetails: {}", details);
+      Mono<Student> saveStudent = repository.save(details);
+      Student savedStudent = saveStudent.block();
+      log.debug("Ending of saveStudentDetails");
+      return savedStudent;
+    } catch (Exception e) {
+      log.error("Exception in saveStudentDetails:", e);
+      throw new StudentServiceException("Exception in getStudentDetails", e);
+    }
+
   }
 
   /***
-   * 
+   * getStudentDetails to get all details of student
    * 
    * @param id
+   * 
    * @return student obj
    */
 
   public StudentDTO getStudentDetails(String id) {
     StudentDTO studentDTO = new StudentDTO();
-    log.debug("Begining of get method");
+    log.debug("Begining of getStudentDetails method");
     try {
       Student findByIdStudent = repository.findById(id).block();
       if (null == findByIdStudent) {
 
         return null;
       }
-      log.debug("Ending of get method");
+
       BeanUtils.copyProperties(findByIdStudent, studentDTO);
+      log.debug("Ending of getStudentDetails method");
       return studentDTO;
 
     } catch (Exception e) {
-      log.error("Exception:", e);
+      log.error("Exception in getStudentDetails method:", e);
       throw new StudentServiceException("Exception in getStudentDetails", e);
     }
 
@@ -92,25 +96,21 @@ public class StudentService {
    * Search student by department and rollNo
    * 
    * @param studentDTO
-   * @return
+   * @return students
    */
-  public List<Student> searchStudentByQueryWithDepartmentAndRollnumber(SearchByDTO studentDTO) {
-
+  public List<Student> searchStudentByQueryWithDepartmentAndRollnumber(
+      SearchCriteriaByDTO studentDTO) {
+    log.debug("Begining of Searchstudent method");
     List<Student> students = null;
-    log.debug("Begining of deletestudent method");
+
     try {
 
       students =
           dao.getStudentByDepartmentandRollNo(studentDTO.getDepartment(), studentDTO.getRollNo());
-      if (students.isEmpty()) {
-        Flux<Student> studentsList = repository.findAll();
-        students = studentsList.toStream().collect(Collectors.toList());
-      } else {
-        log.debug("ending of deletestudent method");
-      }
+
     } catch (Exception exception) {
-      log.error("Exception :", exception);
-      throw new StudentServiceException("Exception in DeleteStudent", exception);
+      log.error("Exception in searchStudentByQueryWithDepartmentAndRollnumber:", exception);
+      throw new StudentServiceException("Exception in Searchtudent", exception);
 
     }
     return students;
@@ -122,24 +122,25 @@ public class StudentService {
    * Delete a particular student based on id
    * 
    * @param id
-   * @return String
+   * @return Student Obj
    */
-  public String deleteStudentDetails(String id) {
+  public Student deleteStudentDetails(String id) {
 
-    log.debug("Begining of delete method");
+    log.debug("Begining of deleteStudentDetails method");
+    Student findStudentById = null;
     try {
-      Student findStudentById = repository.findById(id).block();
-      // Student findStudentById = findByIdStudent.block();
+      findStudentById = repository.findById(id).block();
       if (null != findStudentById) {
         repository.delete(findStudentById).block();
-        log.debug("Ending of delete method");
-        return "Student deleted";
       }
+      log.debug("Ending of deleteStudentDetails method");
+      return findStudentById;
+
     } catch (Exception e) {
-      log.error("Exception:", e);
+      log.error("Exception in deleteStudentDetails:", e);
       throw new StudentServiceException("Exception in DeleteStudentDetails", e);
     }
-    return "Student not deleted";
+
   }
 
   /***
@@ -150,9 +151,9 @@ public class StudentService {
    */
 
   public Student updateStudent(StudentDTO studentDTO) {
+    log.debug("inside updateStudent method");
 
     Student savedStudent = null;
-    log.debug("inside update student");
     try {
 
       Student studentDetails = new Student();
@@ -169,11 +170,12 @@ public class StudentService {
         Mono<Student> saveStudent = repository.save(student);
         savedStudent = saveStudent.block();
       }
+      log.debug("Ending of updateStudent method");
       return savedStudent;
 
     } catch (Exception exception) {
-      log.error("Exception:", exception);
-      throw new StudentServiceException("Exception in Saving a Student", exception);
+      log.error("Exception in updateStudent method:", exception);
+      throw new StudentServiceException("Exception in updating a Student", exception);
     }
 
   }
