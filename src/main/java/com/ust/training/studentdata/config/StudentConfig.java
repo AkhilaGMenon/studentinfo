@@ -9,13 +9,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.azure.cosmos.CosmosClient;
 import com.azure.cosmos.CosmosClientBuilder;
-import com.azure.cosmos.CosmosContainer;
 import com.azure.cosmos.DirectConnectionConfig;
 import com.azure.cosmos.GatewayConnectionConfig;
 import com.azure.spring.data.cosmos.config.AbstractCosmosConfiguration;
 import com.azure.spring.data.cosmos.repository.config.EnableReactiveCosmosRepositories;
-import com.ust.training.studentdata.constant.StudentDBConstants;
-import com.ust.training.studentdata.constant.StudentPackageConstants;
+import com.ust.training.studentdata.constant.StudentServiceConstants;
 
 /**
  * 
@@ -25,7 +23,7 @@ import com.ust.training.studentdata.constant.StudentPackageConstants;
  * 
  */
 @Configuration
-@EnableReactiveCosmosRepositories(basePackages =StudentPackageConstants.STUDENT_BASE_PACKAGE)
+@EnableReactiveCosmosRepositories(basePackages =StudentServiceConstants.STUDENT_BASE_PACKAGE)
 public class StudentConfig extends AbstractCosmosConfiguration {
   @Value("${azure.cosmosdb.uri}")
   private String cosmosDbUrl;
@@ -48,6 +46,12 @@ public class StudentConfig extends AbstractCosmosConfiguration {
         .directMode(new DirectConnectionConfig(), new GatewayConnectionConfig());
 
   }
+
+  /***
+   * Method for returning the cosmosDBUrl and key
+   * 
+   * @return CosmosContainer
+   */
 
   /***
    * Method for returning the cosmosDBUrl and key

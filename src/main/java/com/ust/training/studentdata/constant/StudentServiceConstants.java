@@ -11,13 +11,13 @@ package com.ust.training.studentdata.constant;
  *
  */
 
-public class StudentPackageConstants {
+public class StudentServiceConstants {
   /**
    * 
    * Default constructor of StudentPackageConstants.
    * 
    */
-  private StudentPackageConstants() {
+  private StudentServiceConstants() {
     
   }
   public static final String STUDENT_BASE_PACKAGE              = "com.ust.training.studentdata";

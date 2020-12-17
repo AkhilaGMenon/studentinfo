@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.ust.training.studentdata.annotation.SwaggerToken;
-import com.ust.training.studentdata.common.SearchCriteriaByDTO;
+import com.ust.training.studentdata.common.SearchCriteriaDTO;
 import com.ust.training.studentdata.common.StudentDTO;
 import com.ust.training.studentdata.model.Student;
 import com.ust.training.studentdata.service.StudentService;
@@ -54,10 +54,10 @@ public class StudentController {
   public ResponseEntity<Student> addStudentDetails(@RequestBody StudentDTO studentDTO) {
 
     log.debug("Begining of addStudentDetails method");
-    Student detail = studentService.saveStudentDetails(studentDTO);
-    if (null != detail) {
+    Student student = studentService.updateStudent(studentDTO);
+    if (null != student) {
       log.info("Status:200  Response:", studentDTO);
-      return ResponseEntity.ok(detail);
+      return ResponseEntity.ok(student);
     } else {
       log.info("Status:204 Response:");
       log.debug("Ending ofaddStudentDetails method");
@@ -79,18 +79,18 @@ public class StudentController {
   @ApiOperation(value = "Search Student By Department and RollNumber ",
       notes = "Returns 200 OK/204 NO_CONTENT", httpMethod = HttpMethod.POST)
 
-  public ResponseEntity<List<Student>> searchStudentByDepartmentRollNumber(
-      @RequestBody SearchCriteriaByDTO searchByDTO) {
-    log.debug("Begining of searchStudentByDepartmentRollNumber search method");
-    List<Student> student =
-        studentService.searchStudentByQueryWithDepartmentAndRollnumber(searchByDTO);
-    if (CollectionUtils.isEmpty(student)) {
+  public ResponseEntity<List<Student>> searchStudentCriteria(
+      @RequestBody SearchCriteriaDTO searchCriteriaDTO) {
+    log.debug("Begining of search Student method");
+    List<Student> student = studentService.searchStudent(searchCriteriaDTO);
+    if (!CollectionUtils.isEmpty(student)) {
       log.info("Status:200  Response:", student);
-      log.debug("Ending the searchStudentByDepartmentRollNumber operation");
+      log.debug("Ending the search Student method");
       return ResponseEntity.ok(student);
     } else {
-      log.debug("Ending the Post operation");
       log.info("Status:204  Response:");
+      log.debug("Ending the Search student operation");
+
       return ResponseEntity.noContent().build();
     }
   }
@@ -116,13 +116,14 @@ public class StudentController {
     if (null != details) {
       log.info("Status:200 Response:");
       message = "Student Deleted";
-      log.debug("Ending the deleteStudent operation");
       return ResponseEntity.ok(message);
 
-    }
-    log.info("status:204 Response:");
-    return ResponseEntity.noContent().build();
+    } else {
+      log.info("status:204 Response:");
+      log.debug("Ending the deleteStudent operation");
 
+      return ResponseEntity.noContent().build();
+    }
   }
 
   /***
@@ -146,8 +147,9 @@ public class StudentController {
       log.info("Status:200  Response:", details);
       return ResponseEntity.ok(details);
     } else {
-      log.debug("Ending of getStudent operation");
       log.info("Status:204 Response:");
+      log.debug("Ending of getStudent operation");
+
       return ResponseEntity.noContent().build();
     }
 

@@ -16,8 +16,7 @@ import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.models.CosmosQueryRequestOptions;
 import com.azure.cosmos.models.SqlParameter;
 import com.azure.cosmos.models.SqlQuerySpec;
-import com.ust.training.studentdata.constant.SQLQueries;
-import com.ust.training.studentdata.constant.StudentDBConstants;
+import com.ust.training.studentdata.constant.SQLQueryConstant;
 import com.ust.training.studentdata.exception.StudentServiceException;
 import com.ust.training.studentdata.model.Student;
 import lombok.extern.slf4j.Slf4j;
@@ -52,27 +51,27 @@ public class StudentDAO {
 
     log.debug("Begining of getStudentByDepartmentandRollNo method");
     List<Student> studentList = null;
-
     try {
       SqlQuerySpec querySpec = new SqlQuerySpec();
-      String query = SQLQueries.BASE_QUERY;
+      String query = SQLQueryConstant.BASE_QUERY;
       List<SqlParameter> paramList = new ArrayList<>();
       SqlParameter departmentParam =
-          new SqlParameter(SQLQueries.DATABASE_PARAM_DEPARTMENT, department);
-      SqlParameter rollNoparam = new SqlParameter(SQLQueries.DATABASE_PARAM_ROLLNUMBER, rollNo);
+          new SqlParameter(SQLQueryConstant.DATABASE_PARAM_DEPARTMENT, department);
+      SqlParameter rollNoparam =
+          new SqlParameter(SQLQueryConstant.DATABASE_PARAM_ROLLNUMBER, rollNo);
       if (!StringUtils.isEmpty(department)) {
-        query = query.concat(SQLQueries.DEPARTMENT_CRITERIA);
+        query = query.concat(SQLQueryConstant.DEPARTMENT_CRITERIA);
         paramList.add(departmentParam);
       }
       if (null != rollNo) {
-        query = query.concat(SQLQueries.ROLL_NUMBER_CRITERIA);
+        query = query.concat(SQLQueryConstant.ROLL_NUMBER_CRITERIA);
         paramList.add(rollNoparam);
 
       }
       querySpec.setQueryText(query);
       querySpec.setParameters(paramList);
       studentList = cosmosClientBuilder.buildClient().getDatabase(databaseName)
-          .getContainer(StudentDBConstants.COLLECTION_NAME)
+          .getContainer(SQLQueryConstant.COLLECTION_NAME)
           .queryItems(querySpec, getQueryOptions(), Student.class).stream()
           .collect(Collectors.toList());
     } catch (Exception e) {
@@ -83,7 +82,6 @@ public class StudentDAO {
     return studentList;
 
   }
-
 
   /***
    * CosmosQueryRequestOptions is for Query options

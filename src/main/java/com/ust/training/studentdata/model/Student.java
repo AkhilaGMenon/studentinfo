@@ -7,7 +7,7 @@ package com.ust.training.studentdata.model;
 import org.springframework.data.annotation.Id;
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
-import com.ust.training.studentdata.constant.StudentDBConstants;
+import com.ust.training.studentdata.constant.SQLQueryConstant;
 import lombok.Data;
 
 /**
@@ -18,7 +18,7 @@ import lombok.Data;
  * @author Akhila
  *
  */
-@Container(containerName =StudentDBConstants.COLLECTION_NAME)
+@Container(containerName = SQLQueryConstant.COLLECTION_NAME)
 @Data
 
 public class Student {

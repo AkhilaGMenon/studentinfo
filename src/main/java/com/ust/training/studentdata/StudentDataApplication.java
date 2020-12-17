@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import com.ust.training.studentdata.constant.StudentPackageConstants;
+import com.ust.training.studentdata.constant.StudentServiceConstants;
 import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -46,7 +46,7 @@ public class StudentDataApplication implements WebMvcConfigurer {
   @Bean
   public Docket api() {
     return new Docket(DocumentationType.SWAGGER_2).select()
-        .apis(RequestHandlerSelectors.basePackage(StudentPackageConstants.STUDENT_BASE_PACKAGE_CONTROLLER))
+        .apis(RequestHandlerSelectors.basePackage(StudentServiceConstants.STUDENT_BASE_PACKAGE_CONTROLLER))
         .paths(PathSelectors.any()).build();
   }
   /**

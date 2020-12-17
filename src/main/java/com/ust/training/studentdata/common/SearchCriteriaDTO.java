@@ -16,7 +16,7 @@ import lombok.Data;
  */
 
 @Data
-public class SearchCriteriaByDTO {
+public class SearchCriteriaDTO {
 
   private Integer rollNo;
   private String department;

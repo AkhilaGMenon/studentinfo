@@ -9,14 +9,13 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ust.training.studentdata.common.SearchCriteriaByDTO;
+import com.ust.training.studentdata.common.SearchCriteriaDTO;
 import com.ust.training.studentdata.common.StudentDTO;
 import com.ust.training.studentdata.dao.StudentDAO;
 import com.ust.training.studentdata.exception.StudentServiceException;
 import com.ust.training.studentdata.model.Student;
 import com.ust.training.studentdata.repo.IStudentRepo;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 
 /**
  * 
@@ -34,36 +33,6 @@ public class StudentService {
   private StudentDAO dao;
 
   /***
-   * 
-   * Save student details
-   * 
-   * @param studentDTO
-   * @return student obj
-   */
-  public Student saveStudentDetails(StudentDTO studentDTO) {
-
-    log.debug("Begining of saveStudentDetails method");
-    Student details = new Student();
-    try {
-      details.setId(studentDTO.getId());
-      details.setFirstName(studentDTO.getFirstName());
-      details.setLastName(studentDTO.getLastName());
-      details.setAddress(studentDTO.getAddress());
-      details.setRollNo(studentDTO.getRollNo());
-      details.setDepartment(studentDTO.getDepartment());
-      log.debug("Saving studentDetails: {}", details);
-      Mono<Student> saveStudent = repository.save(details);
-      Student savedStudent = saveStudent.block();
-      log.debug("Ending of saveStudentDetails");
-      return savedStudent;
-    } catch (Exception e) {
-      log.error("Exception in saveStudentDetails:", e);
-      throw new StudentServiceException("Exception in getStudentDetails", e);
-    }
-
-  }
-
-  /***
    * getStudentDetails to get all details of student
    * 
    * @param id
@@ -72,16 +41,16 @@ public class StudentService {
    */
 
   public StudentDTO getStudentDetails(String id) {
-    StudentDTO studentDTO = new StudentDTO();
     log.debug("Begining of getStudentDetails method");
+    StudentDTO studentDTO = new StudentDTO();
     try {
-      Student findByIdStudent = repository.findById(id).block();
-      if (null == findByIdStudent) {
+      Student student = repository.findById(id).block();
+      if (null == student) {
 
         return null;
       }
 
-      BeanUtils.copyProperties(findByIdStudent, studentDTO);
+      BeanUtils.copyProperties(student, studentDTO);
       log.debug("Ending of getStudentDetails method");
       return studentDTO;
 
@@ -98,8 +67,7 @@ public class StudentService {
    * @param studentDTO
    * @return students
    */
-  public List<Student> searchStudentByQueryWithDepartmentAndRollnumber(
-      SearchCriteriaByDTO studentDTO) {
+  public List<Student> searchStudent(SearchCriteriaDTO studentDTO) {
     log.debug("Begining of Searchstudent method");
     List<Student> students = null;
 
@@ -107,14 +75,14 @@ public class StudentService {
 
       students =
           dao.getStudentByDepartmentandRollNo(studentDTO.getDepartment(), studentDTO.getRollNo());
+      log.debug("Ending of search Student method");
 
     } catch (Exception exception) {
-      log.error("Exception in searchStudentByQueryWithDepartmentAndRollnumber:", exception);
+      log.error("Exception in search Student :", exception);
       throw new StudentServiceException("Exception in Searchtudent", exception);
 
     }
     return students;
-
   }
 
   /***
@@ -127,14 +95,14 @@ public class StudentService {
   public Student deleteStudentDetails(String id) {
 
     log.debug("Begining of deleteStudentDetails method");
-    Student findStudentById = null;
+    Student student = null;
     try {
-      findStudentById = repository.findById(id).block();
-      if (null != findStudentById) {
-        repository.delete(findStudentById).block();
+      student = repository.findById(id).block();
+      if (null != student) {
+        repository.delete(student).block();
       }
       log.debug("Ending of deleteStudentDetails method");
-      return findStudentById;
+      return student;
 
     } catch (Exception e) {
       log.error("Exception in deleteStudentDetails:", e);
@@ -157,19 +125,18 @@ public class StudentService {
     try {
 
       Student studentDetails = new Student();
-      Mono<Student> findByIdStudent = repository.findById(studentDTO.getId());
-      Student student = findByIdStudent.block();
-      if (null != studentDetails) {
+      Student student = repository.findById(studentDTO.getId()).block();
+      if (null != student) {
         repository.delete(student).block();
-        studentDetails.setId(studentDTO.getId());
-        studentDetails.setFirstName(studentDTO.getFirstName());
-        studentDetails.setLastName(studentDTO.getLastName());
-        studentDetails.setAddress(studentDTO.getAddress());
-        studentDetails.setRollNo(studentDTO.getRollNo());
-        studentDetails.setDepartment(studentDTO.getDepartment());
-        Mono<Student> saveStudent = repository.save(student);
-        savedStudent = saveStudent.block();
       }
+      studentDetails.setId(studentDTO.getId());
+      studentDetails.setFirstName(studentDTO.getFirstName());
+      studentDetails.setLastName(studentDTO.getLastName());
+      studentDetails.setAddress(studentDTO.getAddress());
+      studentDetails.setRollNo(studentDTO.getRollNo());
+      studentDetails.setDepartment(studentDTO.getDepartment());
+      savedStudent = repository.save(studentDetails).block();
+
       log.debug("Ending of updateStudent method");
       return savedStudent;
 
@@ -177,6 +144,7 @@ public class StudentService {
       log.error("Exception in updateStudent method:", exception);
       throw new StudentServiceException("Exception in updating a Student", exception);
     }
+
 
   }
 }
