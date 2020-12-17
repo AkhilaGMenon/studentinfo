@@ -1,6 +1,7 @@
 /***
  * Project Name:StudentData
  */
+
 package com.ust.training.studentdata.exception;
 
 /**
@@ -11,7 +12,6 @@ package com.ust.training.studentdata.exception;
  *
  */
 public class StudentServiceException extends RuntimeException {
-
   private static final long serialVersionUID = 2853146757927156650L;
 
   /**
