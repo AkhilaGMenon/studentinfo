@@ -27,6 +27,7 @@ import com.ust.training.studentdata.common.SearchCriteriaDTO;
 import com.ust.training.studentdata.common.StudentDTO;
 import com.ust.training.studentdata.model.Student;
 import com.ust.training.studentdata.service.StudentService;
+
 /**
  * StudentControllerTestCase is a test class 
  * 
