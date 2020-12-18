@@ -1,7 +1,7 @@
 /***
  * Project Name:StudentData
  */
-package com.ust.training.studentdata.temp;
+package com.ust.training.studentdata.exception;
 
 /**
  * 
