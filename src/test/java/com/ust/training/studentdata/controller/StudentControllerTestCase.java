@@ -1,3 +1,8 @@
+/***
+ * 
+ * Project Name :StudentData
+ * 
+ */
 package com.ust.training.studentdata.controller;
 
 import static org.junit.Assert.assertEquals;
@@ -22,7 +27,12 @@ import com.ust.training.studentdata.common.SearchCriteriaDTO;
 import com.ust.training.studentdata.common.StudentDTO;
 import com.ust.training.studentdata.model.Student;
 import com.ust.training.studentdata.service.StudentService;
-
+/**
+ * StudentControllerTestCase is a test class 
+ * 
+ * @author Akhila
+ *
+ */
 @RunWith(JUnit4.class)
 public class StudentControllerTestCase {
 
@@ -30,7 +40,9 @@ public class StudentControllerTestCase {
   private StudentService studentService;
   @InjectMocks
   private StudentController studentController;
+
   MockMvc mockMvc;
+
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
@@ -85,7 +97,9 @@ public class StudentControllerTestCase {
     MvcResult result = mockMvc.perform(requestBuilder).andReturn();
     assertEquals(result.getResponse().getStatus(), 200);
     Student res = mapper.readValue(result.getResponse().getContentAsString(), Student.class);
+
     assertEquals(res.getFirstName(), "Ammu");
+
 
   }
 
@@ -136,7 +150,7 @@ public class StudentControllerTestCase {
 
   /**
    *
-   * Test for {@link StudentController#deleteStudent(String )} with no content as
+   * Test for {@link StudentController#deleteStudent(String , HttpHeaders)} with no content as
    * response
    * 
    * @throws Exception
@@ -227,5 +241,7 @@ public class StudentControllerTestCase {
     assertEquals(result.getResponse().getStatus(), 200);
 
   }
+
+
 }
 
