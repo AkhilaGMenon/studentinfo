@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import com.ust.training.studentdata.common.SearchCriteriaDTO;
 import com.ust.training.studentdata.common.StudentDTO;
 import com.ust.training.studentdata.dao.StudentDAO;
-import com.ust.training.studentdata.exception.StudentServiceException;
 import com.ust.training.studentdata.model.Student;
 import com.ust.training.studentdata.repo.IStudentRepo;
+import com.ust.training.studentdata.temp.StudentServiceException;
 import lombok.extern.slf4j.Slf4j;
 
 /**

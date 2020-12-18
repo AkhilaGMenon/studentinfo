@@ -17,8 +17,8 @@ import com.azure.cosmos.models.CosmosQueryRequestOptions;
 import com.azure.cosmos.models.SqlParameter;
 import com.azure.cosmos.models.SqlQuerySpec;
 import com.ust.training.studentdata.constant.SQLQueryConstant;
-import com.ust.training.studentdata.exception.StudentServiceException;
 import com.ust.training.studentdata.model.Student;
+import com.ust.training.studentdata.temp.StudentServiceException;
 import lombok.extern.slf4j.Slf4j;
 
 /***

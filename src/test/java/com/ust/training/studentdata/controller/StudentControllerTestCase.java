@@ -27,7 +27,6 @@ import com.ust.training.studentdata.common.SearchCriteriaDTO;
 import com.ust.training.studentdata.common.StudentDTO;
 import com.ust.training.studentdata.model.Student;
 import com.ust.training.studentdata.service.StudentService;
-
 /**
  * StudentControllerTestCase is a test class 
  * 
@@ -41,9 +40,7 @@ public class StudentControllerTestCase {
   private StudentService studentService;
   @InjectMocks
   private StudentController studentController;
-
   MockMvc mockMvc;
-
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
@@ -100,7 +97,6 @@ public class StudentControllerTestCase {
     Student res = mapper.readValue(result.getResponse().getContentAsString(), Student.class);
 
     assertEquals(res.getFirstName(), "Ammu");
-
 
   }
 
@@ -242,7 +238,5 @@ public class StudentControllerTestCase {
     assertEquals(result.getResponse().getStatus(), 200);
 
   }
-
-
 }
 
